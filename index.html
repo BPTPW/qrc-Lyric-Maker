@@ -6,6 +6,7 @@
 <title>qrc逐字歌词制作</title>
 <script>
     let nowItem = 0
+    let startTime = 0;
     function split(){
         nowItem = 0
         
@@ -57,15 +58,22 @@
     function addText(lineStart,text){
         let lrcList = document.getElementById('lrcList')
         let ele = document.createElement('a')
-        ele.className = 'aLyric'
+        let timeEle = document.createElement('a')
+        
         ele.innerHTML = text
+        
         if(lineStart){
             let br = document.createElement('br')
             lrcList.appendChild(br)
             
-            ele.name = 'lineStart'
+            timeEle.name = 'lineStart'
         }
+        
+        ele.className = 'aLyric'
+        timeEle.className = 'tLyric'
+        
         lrcList.appendChild(ele)
+        lrcList.appendChild(timeEle)
     }
     
     function onInputFileChange() {  
@@ -78,44 +86,115 @@
         
         let timeMs = (audio.currentTime * 1000).toFixed(0)
         
-        let item1 = document.getElementsByClassName('aLyric')[nowItem]
-        let item2 = null;
+        //1都是上一个，2是接下来的
+        let text1 = document.getElementsByClassName('aLyric')[nowItem]
+        let text2 = null;
         if(nowItem + 1 < document.getElementsByClassName('aLyric').length){
-            item2 = document.getElementsByClassName('aLyric')[nowItem + 1]
+            text2 = document.getElementsByClassName('aLyric')[nowItem + 1]
+        }
+        
+        let item1 = document.getElementsByClassName('tLyric')[nowItem]
+        let item2 = null;
+        if(nowItem + 1 < document.getElementsByClassName('tLyric').length){
+            item2 = document.getElementsByClassName('tLyric')[nowItem + 1]
         }
         
         if(item1.name == 'lineStart'){
             item1.innerHTML = '[' + timeMs + ',0]' + item1.innerHTML
         }else{
-            item1.innerHTML = item1.innerHTML + timeMs + ")"
+            item1.innerHTML = item1.innerHTML + (timeMs-startTime) + ")"
         }
-        
-        item1.style.backgroundColor = '#FFFFFF'
+        text1.style.backgroundColor = '#FFFFFF'
+        text1.style.color = '#FF0000'
         
         if(item2!=null){
             if(item2.name != 'lineStart'){
-                item2.style.backgroundColor = '#f3e715'
-                item2.innerHTML = item2.innerHTML + "(" + timeMs + ","
+                item2.innerHTML = "(" + timeMs + ","
+                text2.style.backgroundColor = '#f3e715'
             }
         }
         
         nowItem++
+        startTime = timeMs
+    }
+    
+    function last(){
+        let audio = document.getElementById('musicPlayer')
+        
+        //1是现在的，2是要切换到的上一个
+        let text1 = document.getElementsByClassName('aLyric')[nowItem]
+        let text2 = null;
+        if(nowItem + 1 < document.getElementsByClassName('aLyric').length){
+            text2 = document.getElementsByClassName('aLyric')[nowItem - 1]
+        }
+        
+        let item1 = document.getElementsByClassName('tLyric')[nowItem]
+        if(nowItem + 1 < document.getElementsByClassName('tLyric').length){
+            let item2 = document.getElementsByClassName('tLyric')[nowItem - 1]
+            
+            let lastTime = item2.innerHTML.substring(1,item2.innerHTML.indexOf(','))
+            audio.currentTime = (lastTime-2000)/1000
+            
+            text1.style.backgroundColor = '#FFFFFF'
+            text2.style.color = '#000000'
+            text2.style.backgroundColor = '#f3e715'
+        }
+        nowItem--
+    }
+    
+    function displayTimeChange(){
+        let tLryric = document.getElementsByClassName('tLyric')
+        if(document.getElementById('displayTime').checked){
+            for(let i=0;i<tLryric.length;i++){
+                tLryric[i].style.display = 'inline-block'
+            }
+        }else{
+            for(let i=0;i<tLryric.length;i++){
+                tLryric[i].style.display = 'none'
+            }
+        }
     }
     
 	</script>
+    <style>
+        .float{
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            background: #EBEBEB;
+            width: 100%;
+        }
+        .tLyric{
+            display: none;
+        }
+        #musicPlayer{
+            width: 100%;
+            height: 30px;
+        }
+        #lrcText{
+            width: 100%;
+            height: 50%;
+        }
+        #lrcList{
+            margin-bottom: 50%;
+        }
+    </style>
 </head>
 <body>
-    <input type="file" onChange="onInputFileChange()" id="file">
-    <br>
-    <br>
-    <audio controls id="musicPlayer"></audio>
-    <br>
-    <br>
+    <p>输入歌词：</p>
     <textarea id="lrcText"></textarea>
+    <br>
     <button onClick="split()">生成列表</button>
-    <br>
-    <br>
-    <button onClick="next()">下一个</button>
+    <br><br>
     <div id="lrcList"></div>
+    
+    <div class="float">
+        <input type="file" onChange="onInputFileChange()" id="file">
+        <button onClick="next()">下一个字</button>
+        <button onClick="last()">上一个字</button>
+        <input type="checkbox" id="displayTime" onChange="displayTimeChange()">显示时间
+        <br>
+        <audio controls id="musicPlayer"></audio>
+    </div>
 </body>
 </html>
