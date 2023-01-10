@@ -178,7 +178,53 @@
         }
     }
     
+    function speedChange(){
+        document.getElementById('musicPlayer').playbackRate = document.getElementById('speed').value
+    }
+    
 	</script>
+    <script>
+        document.onkeydown = function(eve){
+            keyCode = eve.keyCode || eve.which
+            
+            console.log(keyCode)
+            
+            if(document.getElementById('listenKey').checked){
+                //S
+                if(keyCode == 83){
+                    next()
+                }
+                //W
+                if(keyCode == 87){
+                    last()
+                }
+                //D
+                if(keyCode == 68){
+                    cut()
+                }
+                //Q
+                if(keyCode == 81){
+                    document.getElementById('speed').value = (document.getElementById('speed').value - 0.1).toFixed(2)
+                    speedChange()
+                }
+                //E
+                if(keyCode == 69){
+                    document.getElementById('speed').value = (Number(document.getElementById('speed').value) + 0.1).toFixed(2)
+                    speedChange()
+                }
+                //空格
+                if(keyCode == 32){
+                    if(document.getElementById('musicPlayer').paused == true){
+                        document.getElementById('musicPlayer').play()
+                    }else{
+                        document.getElementById('musicPlayer').pause()
+                    }
+                    
+                }
+            }
+            
+        }
+    </script>
     <style>
         .float{
             position: fixed;
@@ -186,6 +232,8 @@
             left: 0px;
             background: #EBEBEB;
             width: 100%;
+            padding-top: 5px;
+            padding-bottom: 5px;
         }
         .tLyric{
             display: none;
@@ -216,7 +264,10 @@
         <button onClick="next()">下一个字</button>
         <button onClick="last()">上一个字</button>
         <button onClick="cut()">中断</button>
+        <br>
         <input type="checkbox" id="displayTime" onChange="displayTimeChange()">显示时间
+        <input type="checkbox" id="listenKey">监测键盘
+        倍速播放<input type="number" id="speed" value="1" onChange="speedChange()">
         <br>
         <audio controls id="musicPlayer"></audio>
     </div>
