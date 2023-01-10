@@ -118,6 +118,7 @@
         
         nowItem++
         startTime = timeMs
+        if(item2.name == 'lineStart') next()
     }
     
     function last(){
@@ -136,7 +137,9 @@
             
             let lastTime = item2.innerHTML.substring(1,item2.innerHTML.indexOf(','))
             audio.currentTime = (lastTime-2000)/1000
-            item2.innerHTML = "(" + lastTime + ","
+            
+            if(item2.name != 'lineStart')
+                item2.innerHTML = "(" + lastTime + ","
             
             text1.style.backgroundColor = '#FFFFFF'
             text2.style.color = '#000000'
@@ -144,6 +147,7 @@
             
             nowItem--
             startTime = lastTime
+            if(item2.name == 'lineStart') last()
         }
     }
     
