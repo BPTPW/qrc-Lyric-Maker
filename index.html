@@ -102,7 +102,9 @@
         if(item1.name == 'lineStart'){
             item1.innerHTML = '[' + timeMs + ',0]' + item1.innerHTML
         }else{
-            item1.innerHTML = item1.innerHTML + (timeMs-startTime) + ")"
+            if(!item1.innerHTML.includes(')')){
+                item1.innerHTML = item1.innerHTML + (timeMs-startTime) + ")"
+            }
         }
         text1.style.backgroundColor = '#FFFFFF'
         text1.style.color = '#FF0000'
@@ -134,12 +136,33 @@
             
             let lastTime = item2.innerHTML.substring(1,item2.innerHTML.indexOf(','))
             audio.currentTime = (lastTime-2000)/1000
+            item2.innerHTML = "(" + lastTime + ","
             
             text1.style.backgroundColor = '#FFFFFF'
             text2.style.color = '#000000'
             text2.style.backgroundColor = '#f3e715'
+            
+            nowItem--
+            startTime = lastTime
         }
-        nowItem--
+    }
+    
+    function cut(){
+        let audio = document.getElementById('musicPlayer')
+        
+        let timeMs = (audio.currentTime * 1000).toFixed(0)
+        
+        let text1 = document.getElementsByClassName('aLyric')[nowItem]
+        
+        let item1 = document.getElementsByClassName('tLyric')[nowItem]
+        
+        if(item1.name == 'lineStart'){
+            item1.innerHTML = '[' + timeMs + ',0]' + item1.innerHTML
+        }else{
+            item1.innerHTML = item1.innerHTML + (timeMs-startTime) + ")"
+        }
+        text1.style.backgroundColor = '#FFFFFF'
+        text1.style.color = '#FF0000'
     }
     
     function displayTimeChange(){
@@ -192,6 +215,7 @@
         <input type="file" onChange="onInputFileChange()" id="file">
         <button onClick="next()">下一个字</button>
         <button onClick="last()">上一个字</button>
+        <button onClick="cut()">中断</button>
         <input type="checkbox" id="displayTime" onChange="displayTimeChange()">显示时间
         <br>
         <audio controls id="musicPlayer"></audio>
