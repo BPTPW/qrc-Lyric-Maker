@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>qrc逐字歌词制作</title>
 <script>
-		function start(){
+		function split(){
+            document.getElementById('lrcList').innerHTML = ''
+            
 			let text = document.getElementById('lrcText').value
 			
 			let line = text.split(/[\n]/)
@@ -15,6 +17,9 @@
                 
 				let lineTmp = new Array()
                 let enTmp = null;
+                
+                addText(true,null)
+                
                 for(let i=0;i<nowLine.length;i++){
                     let nowText = nowLine.substr(i,1)
                     
@@ -26,26 +31,46 @@
                             }
                         if(nowText == ' '){
                             lineTmp.push(enTmp)
+                            addText(false,enTmp)
                             enTmp = null
                         }
                     }else{
                         if(enTmp!=null){
                             lineTmp.push(enTmp)
+                            addText(false,enTmp)
                             enTmp = null
                         }
                         lineTmp.push(nowText)
+                        addText(false,nowText)
                     }
                 }
                 if(enTmp != null){
                     lineTmp.push(enTmp)
+                    addText(false,enTmp)
                 }
-                console.log(lineTmp)
+                //console.log(lineTmp)
 			}
 		}
+    function addText(lineStart,text){
+        let lrcList = document.getElementById('lrcList')
+        let ele = document.createElement('a')
+        ele.className = 'aLyric'
+        ele.innerHTML = text
+        if(lineStart){
+            let br = document.createElement('br')
+            lrcList.appendChild(br)
+            
+            ele.name = 'lineStart'
+        }
+        lrcList.appendChild(ele)
+    }
 	</script>
 </head>
 <body>
     <textarea id="lrcText"></textarea>
-    <button onClick="start();">OK</button>
+    <button onClick="split();">split</button>
+    <div id="lrcList">
+        <a>asdsad</a>
+    </div>
 </body>
 </html>
