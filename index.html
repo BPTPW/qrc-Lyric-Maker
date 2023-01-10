@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>qrc逐字歌词制作</title>
+	<script>
+		function start(){
+			text = document.getElementById('lrcText').value
+			
+			for(var i=0;i<text.length;i++){
+				var nowText = text.substr(i,1)
+				if(nowText.charCodeAt()>32 && nowText.charCodeAt()<125){
+					
+				}else{
+					
+				}
+			}
+		}
+	</script>
+</head>
+<body>
+	<textarea id="lrcText"></textarea>
+	<button onClick="start();">OK</button>
+</body>
+</html>
