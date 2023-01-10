@@ -5,52 +5,55 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>qrc逐字歌词制作</title>
 <script>
-		function split(){
-            document.getElementById('lrcList').innerHTML = ''
-            
-			let text = document.getElementById('lrcText').value
-			
-			let line = text.split(/[\n]/)
-			
-			for(let j=0;j<line.length;j++){
-				let nowLine = line[j]
+    let nowItem = 0
+    function split(){
+        nowItem = 0
+        
+        document.getElementById('lrcList').innerHTML = ''
+        
+        let text = document.getElementById('lrcText').value
+
+        let line = text.split(/[\n]/)
+
+        for(let j=0;j<line.length;j++){
+        let nowLine = line[j]
+
+        let lineTmp = new Array()
+        let enTmp = null;
                 
-				let lineTmp = new Array()
-                let enTmp = null;
+        addText(true,null)
                 
-                addText(true,null)
-                
-                for(let i=0;i<nowLine.length;i++){
-                    let nowText = nowLine.substr(i,1)
+        for(let i=0;i<nowLine.length;i++){
+            let nowText = nowLine.substr(i,1)
                     
-                    if(nowText.charCodeAt()>=32 && nowText.charCodeAt()<=125){
-                        if(enTmp == null){
-                                enTmp = nowText
-                            }else{
-                                enTmp = enTmp + nowText
-                            }
-                        if(nowText == ' '){
-                            lineTmp.push(enTmp)
-                            addText(false,enTmp)
-                            enTmp = null
-                        }
+                if(nowText.charCodeAt()>=32 && nowText.charCodeAt()<=125){
+                    if(enTmp == null){
+                        enTmp = nowText
                     }else{
-                        if(enTmp!=null){
-                            lineTmp.push(enTmp)
-                            addText(false,enTmp)
-                            enTmp = null
-                        }
-                        lineTmp.push(nowText)
-                        addText(false,nowText)
+                        enTmp = enTmp + nowText
                     }
+                    if(nowText == ' '){
+                        lineTmp.push(enTmp)
+                        addText(false,enTmp)
+                        enTmp = null
+                    }
+                }else{
+                    if(enTmp!=null){
+                        lineTmp.push(enTmp)
+                        addText(false,enTmp)
+                        enTmp = null
+                    }
+                    lineTmp.push(nowText)
+                    addText(false,nowText)
                 }
-                if(enTmp != null){
-                    lineTmp.push(enTmp)
-                    addText(false,enTmp)
-                }
-                //console.log(lineTmp)
-			}
-		}
+            }
+            if(enTmp != null){
+                lineTmp.push(enTmp)
+                addText(false,enTmp)
+            }
+            //console.log(lineTmp)
+        }
+    }
     function addText(lineStart,text){
         let lrcList = document.getElementById('lrcList')
         let ele = document.createElement('a')
@@ -64,13 +67,55 @@
         }
         lrcList.appendChild(ele)
     }
+    
+    function onInputFileChange() {  
+       let file = document.getElementById('file').files[0];  
+       let url = URL.createObjectURL(file);
+       document.getElementById("musicPlayer").src = url;  
+    }
+    function next(){
+        let audio = document.getElementById('musicPlayer')
+        
+        let timeMs = (audio.currentTime * 1000).toFixed(0)
+        
+        let item1 = document.getElementsByClassName('aLyric')[nowItem]
+        let item2 = null;
+        if(nowItem + 1 < document.getElementsByClassName('aLyric').length){
+            item2 = document.getElementsByClassName('aLyric')[nowItem + 1]
+        }
+        
+        if(item1.name == 'lineStart'){
+            item1.innerHTML = '[' + timeMs + ',0]' + item1.innerHTML
+        }else{
+            item1.innerHTML = item1.innerHTML + timeMs + ")"
+        }
+        
+        item1.style.backgroundColor = '#FFFFFF'
+        
+        if(item2!=null){
+            if(item2.name != 'lineStart'){
+                item2.style.backgroundColor = '#f3e715'
+                item2.innerHTML = item2.innerHTML + "(" + timeMs + ","
+            }
+        }
+        
+        nowItem++
+    }
+    
 	</script>
 </head>
 <body>
+    <input type="file" onChange="onInputFileChange()" id="file">
+    <br>
+    <br>
+    <audio controls id="musicPlayer"></audio>
+    <br>
+    <br>
     <textarea id="lrcText"></textarea>
-    <button onClick="split();">split</button>
-    <div id="lrcList">
-        <a>asdsad</a>
-    </div>
+    <button onClick="split()">生成列表</button>
+    <br>
+    <br>
+    <button onClick="next()">下一个</button>
+    <div id="lrcList"></div>
 </body>
 </html>
