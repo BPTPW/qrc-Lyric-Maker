@@ -1,43 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>qrc逐字歌词制作</title>
-	<script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qrc逐字歌词制作</title>
+<script>
 		function start(){
-			var text = document.getElementById('lrcText').value
-			var lineTmp = new Array()
-			var enTmp = null;
-			for(var i=0;i<text.length;i++){
-				var nowText = text.substr(i,1)
-				if(nowText.charCodeAt()>=32 && nowText.charCodeAt()<=125){
-					if(enTmp == null){
-							enTmp = nowText
-						}else{
-							enTmp = enTmp + nowText
-						}
-					if(nowText == ' '){
-						lineTmp.push(enTmp)
-						enTmp = null
-					}
-				}else{
-					if(enTmp!=null){
-						lineTmp.push(enTmp)
-						enTmp = null
-					}
-					lineTmp.push(nowText)
-				}
+			let text = document.getElementById('lrcText').value
+			
+			let line = text.split(/[\n]/)
+			
+			for(let j=0;j<line.length;j++){
+				let nowLine = line[j]
+                
+				let lineTmp = new Array()
+                let enTmp = null;
+                for(let i=0;i<nowLine.length;i++){
+                    let nowText = nowLine.substr(i,1)
+                    
+                    if(nowText.charCodeAt()>=32 && nowText.charCodeAt()<=125){
+                        if(enTmp == null){
+                                enTmp = nowText
+                            }else{
+                                enTmp = enTmp + nowText
+                            }
+                        if(nowText == ' '){
+                            lineTmp.push(enTmp)
+                            enTmp = null
+                        }
+                    }else{
+                        if(enTmp!=null){
+                            lineTmp.push(enTmp)
+                            enTmp = null
+                        }
+                        lineTmp.push(nowText)
+                    }
+                }
+                if(enTmp != null){
+                    lineTmp.push(enTmp)
+                }
+                console.log(lineTmp)
 			}
-			if(enTmp != null){
-				lineTmp.push(enTmp)
-			}
-			console.log(lineTmp)
 		}
 	</script>
 </head>
 <body>
-	<textarea id="lrcText"></textarea>
-	<button onClick="start();">OK</button>
+    <textarea id="lrcText"></textarea>
+    <button onClick="start();">OK</button>
 </body>
 </html>
