@@ -55,6 +55,7 @@
             //console.log(lineTmp)
         }
     }
+    
     function addText(lineStart,text){
         let lrcList = document.getElementById('lrcList')
         let ele = document.createElement('a')
@@ -81,6 +82,7 @@
        let url = URL.createObjectURL(file);
        document.getElementById("musicPlayer").src = url;  
     }
+    
     function next(){
         let audio = document.getElementById('musicPlayer')
         
@@ -100,7 +102,7 @@
         }
         
         if(item1.name == 'lineStart'){
-            item1.innerHTML = '[' + timeMs + ',0]' + item1.innerHTML
+            //item1.innerHTML = '[' + timeMs + ',0]' + item1.innerHTML
         }else{
             if(!item1.innerHTML.includes(')')){
                 item1.innerHTML = item1.innerHTML + (timeMs-startTime) + ")"
@@ -119,6 +121,8 @@
         nowItem++
         startTime = timeMs
         if(item2.name == 'lineStart') next()
+        
+        setLineStart()
     }
     
     function last(){
@@ -149,6 +153,8 @@
             startTime = lastTime
             if(item2.name == 'lineStart') last()
         }
+        
+        setLineStart()
     }
     
     function cut(){
@@ -161,29 +167,49 @@
         let item1 = document.getElementsByClassName('tLyric')[nowItem]
         
         if(item1.name == 'lineStart'){
-            item1.innerHTML = '[' + timeMs + ',0]' + item1.innerHTML
+            item1.innerHTML = '[' + timeMs + ',0]'
         }else{
             item1.innerHTML = item1.innerHTML + (timeMs-startTime) + ")"
         }
         text1.style.backgroundColor = '#FFFFFF'
         text1.style.color = '#FF0000'
+        
+        setLineStart()
     }
     
     function displayTimeChange(){
         let tLryric = document.getElementsByClassName('tLyric')
+        let display
         if(document.getElementById('displayTime').checked){
-            for(let i=0;i<tLryric.length;i++){
-                tLryric[i].style.display = 'inline-block'
-            }
+            display = 'inline-block'
         }else{
-            for(let i=0;i<tLryric.length;i++){
-                tLryric[i].style.display = 'none'
-            }
+            display = 'none'
         }
+        for(let i=0;i<tLryric.length;i++){
+            tLryric[i].style.display = display
+        }
+        
+        setLineStart()
     }
     
     function speedChange(){
         document.getElementById('musicPlayer').playbackRate = document.getElementById('speed').value
+    }
+    
+    function setLineStart(){
+        let tLryric = document.getElementsByClassName('tLyric')
+        for(let i=0;i<tLryric.length;i++){
+            if(tLryric[i].name == 'lineStart'){
+                if(tLryric.length > i+1){
+                    let time = tLryric[i+1].innerHTML.substring(1,tLryric[i+1].innerHTML.indexOf(','))
+                    if(time == ''){
+                        tLryric[i].innerHTML = '[0,0]'
+                    }else{
+                        tLryric[i].innerHTML = '[' + time + ',0]'
+                    }
+                }
+            }
+        }
     }
     
 	</script>
