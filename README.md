@@ -6,3 +6,5 @@
 ## 下载使用
 
 下载并用浏览器打开 [index.html](https://github.com/BPTPW/qrc-Lyric-Maker/blob/main/index.html) 文件即可使用
+
+或打开 (http://git.bptpw.cn/qrc-maker/)
