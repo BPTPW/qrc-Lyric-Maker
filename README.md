@@ -18,6 +18,6 @@ Creates character-by-character lyrics compatible with Lyricify 4.0, allowing you
 
 ## Download and Usage
 
-Download and open the [index-en.html](https://github.com/YESNLars/qrc-Lyric-Maker/blob/main/index-en.html) file with your browser to use it
+Download and open the [index.html](https://github.com/BPTPW/qrc-Lyric-Maker/blob/main/index.html) file with your browser to use it
 
 Or visit (https://bptpw.github.io/qrc-maker/)
