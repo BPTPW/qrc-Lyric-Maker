@@ -3,10 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>qrc逐字歌词制作</title>
+<title>QRC逐字歌词制作 / QRC Lyric Maker</title>
 <script>
     let nowItem = 0
     let startTime = 0;
+    let currentLanguage = 'zh'; // 'zh' for Chinese, 'en' for English
+
+    const translations = {
+        zh: {
+            title: 'qrc逐字歌词制作',
+            enterLyrics: '输入歌词：',
+            generateList: '生成列表',
+            nextChar: '下一个字',
+            prevChar: '上一个字',
+            break: '中断',
+            showTime: '显示时间',
+            detectKeyboard: '监测键盘',
+            playbackSpeed: '倍速播放',
+            browseFile: '选择音频文件'
+        },
+        en: {
+            title: 'QRC Character-by-Character Lyric Maker',
+            enterLyrics: 'Enter lyrics:',
+            generateList: 'Generate List',
+            nextChar: 'Next Character',
+            prevChar: 'Previous Character',
+            break: 'Break',
+            showTime: 'Show Time',
+            detectKeyboard: 'Detect Keyboard',
+            playbackSpeed: 'Playback Speed',
+            browseFile: 'Select Audio File'
+        }
+    };
+
+    function setLanguage(lang) {
+        currentLanguage = lang;
+        localStorage.setItem('lyricMakerLanguage', lang);
+        updateUIText();
+    }
+
+    function updateUIText() {
+        const t = translations[currentLanguage];
+        
+        document.title = t.title;
+        document.getElementById('enterLyricsLabel').textContent = t.enterLyrics;
+        document.getElementById('generateListBtn').textContent = t.generateList;
+        document.getElementById('nextBtn').textContent = t.nextChar;
+        document.getElementById('prevBtn').textContent = t.prevChar;
+        document.getElementById('breakBtn').textContent = t.break;
+        document.getElementById('displayTimeLabel').textContent = t.showTime;
+        document.getElementById('listenKeyLabel').textContent = t.detectKeyboard;
+        document.getElementById('playbackSpeedLabel').textContent = t.playbackSpeed;
+        document.getElementById('fileLabel').textContent = t.browseFile;
+
+        // Update language selector
+        document.getElementById('langSelector').value = currentLanguage;
+    }
+
     function split(){
         nowItem = 0
         
@@ -211,6 +264,11 @@
             }
         }
     }
+
+    window.onload = function() {
+        const savedLanguage = localStorage.getItem('lyricMakerLanguage') || 'zh';
+        setLanguage(savedLanguage);
+    }
     
 	</script>
     <script>
@@ -256,6 +314,18 @@
         }
     </script>
     <style>
+        .language-selector {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
         .float{
             position: fixed;
             bottom: 0px;
@@ -282,22 +352,28 @@
     </style>
 </head>
 <body>
-    <p>输入歌词：</p>
+    <select id="langSelector" class="language-selector" onChange="setLanguage(this.value)">
+        <option value="zh">中文</option>
+        <option value="en">English</option>
+    </select>
+
+    <p id="enterLyricsLabel">输入歌词：</p>
     <textarea id="lrcText"></textarea>
     <br>
-    <button onClick="split()">生成列表</button>
+    <button id="generateListBtn" onClick="split()">生成列表</button>
     <br><br>
     <div id="lrcList"></div>
     
     <div class="float">
+        <label id="fileLabel">选择音频文件</label>
         <input type="file" onChange="onInputFileChange()" id="file">
-        <button onClick="next()">下一个字</button>
-        <button onClick="last()">上一个字</button>
-        <button onClick="cut()">中断</button>
+        <button id="nextBtn" onClick="next()">下一个字</button>
+        <button id="prevBtn" onClick="last()">上一个字</button>
+        <button id="breakBtn" onClick="cut()">中断</button>
         <br>
-        <input type="checkbox" id="displayTime" onChange="displayTimeChange()">显示时间
-        <input type="checkbox" id="listenKey">监测键盘
-        倍速播放<input type="number" id="speed" value="1" onChange="speedChange()">
+        <input type="checkbox" id="displayTime" onChange="displayTimeChange()"><label id="displayTimeLabel" for="displayTime">显示时间</label>
+        <input type="checkbox" id="listenKey"><label id="listenKeyLabel" for="listenKey">监测键盘</label>
+        <label id="playbackSpeedLabel">倍速播放</label><input type="number" id="speed" value="1" onChange="speedChange()">
         <br>
         <audio controls id="musicPlayer"></audio>
     </div>
