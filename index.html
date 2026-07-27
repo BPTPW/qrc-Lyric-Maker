@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>qrc逐字歌词制作</title>
+<title>QRC Character-by-Character Lyric Maker</title>
 <script>
     let nowItem = 0
     let startTime = 0;
@@ -88,7 +88,7 @@
         
         let timeMs = (audio.currentTime * 1000).toFixed(0)
         
-        //1都是上一个，2是接下来的
+        //1 is previous, 2 is next
         let text1 = document.getElementsByClassName('aLyric')[nowItem]
         let text2 = null;
         if(nowItem + 1 < document.getElementsByClassName('aLyric').length){
@@ -128,7 +128,7 @@
     function last(){
         let audio = document.getElementById('musicPlayer')
         
-        //1是现在的，2是要切换到的上一个
+        //1 is current, 2 is previous to switch to
         let text1 = document.getElementsByClassName('aLyric')[nowItem]
         let text2 = null;
         if(nowItem + 1 < document.getElementsByClassName('aLyric').length){
@@ -242,7 +242,7 @@
                     document.getElementById('speed').value = (Number(document.getElementById('speed').value) + 0.1).toFixed(2)
                     speedChange()
                 }
-                //空格
+                //Space
                 if(keyCode == 32){
                     if(document.getElementById('musicPlayer').paused == true){
                         document.getElementById('musicPlayer').play()
@@ -282,22 +282,22 @@
     </style>
 </head>
 <body>
-    <p>输入歌词：</p>
+    <p>Enter lyrics:</p>
     <textarea id="lrcText"></textarea>
     <br>
-    <button onClick="split()">生成列表</button>
+    <button onClick="split()">Generate List</button>
     <br><br>
     <div id="lrcList"></div>
     
     <div class="float">
         <input type="file" onChange="onInputFileChange()" id="file">
-        <button onClick="next()">下一个字</button>
-        <button onClick="last()">上一个字</button>
-        <button onClick="cut()">中断</button>
+        <button onClick="next()">Next Character</button>
+        <button onClick="last()">Previous Character</button>
+        <button onClick="cut()">Break</button>
         <br>
-        <input type="checkbox" id="displayTime" onChange="displayTimeChange()">显示时间
-        <input type="checkbox" id="listenKey">监测键盘
-        倍速播放<input type="number" id="speed" value="1" onChange="speedChange()">
+        <input type="checkbox" id="displayTime" onChange="displayTimeChange()">Show Time
+        <input type="checkbox" id="listenKey">Detect Keyboard
+        Playback Speed<input type="number" id="speed" value="1" onChange="speedChange()">
         <br>
         <audio controls id="musicPlayer"></audio>
     </div>
